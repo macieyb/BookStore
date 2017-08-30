@@ -41,3 +41,8 @@
 .book-description, .authorBooksList {
     display : none;
 }
+
+.muted {
+    color: rgba(100, 100, 100, 0.9);
+    font-size: 0.8em;
+}

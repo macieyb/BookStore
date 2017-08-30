@@ -76,12 +76,12 @@ $(function (e) {
 
     function addBooksToDom(books) {
 
-
             var list = $("ul#booksList");
             for (var i = 0; i < books.length; i++) {
                 var inner = "<div class='panel panel-default'>" +
                     "<div class='panel-heading'>" +
-                    "<span class='bookTitle'>" + books[i].title + " - " + books[i].author_id + "</span>" +
+                    "<span class='bookTitle'>" + books[i].title + "</span>" +
+                    "<br><span class='muted'>" +books[i].author.name +" " + books[i].author.surname+ "</span>" +
                     "<button data-id='" + books[i].id + "' class='btn btn-danger pull-right btn-xs btn-book-remove'><i class='fa fa-trash'></i></button>" +
                     "<button data-id='" + books[i].id + "' class='btn btn-primary pull-right btn-xs btn-book-show-description'><i class='fa fa-info-circle'></i></button>" +
                     "</div>" +
@@ -192,6 +192,7 @@ $(function (e) {
                     form.find("#id").val(books[0].id);
                     form.find("#title").val(books[0].title);
                     form.find("#description").val(books[0].description);
+                    form.find("select#author_id_edit").val(books[0].author_id);
                     form.slideDown();
                 }
             }).fail(function (xhr, status, err) {
@@ -241,6 +242,8 @@ $(function (e) {
             .first().siblings("span.bookTitle").html(book[0].title);
         $("ul#booksList").find("button[data-id=" + book[0].id + "]")
             .first().closest("DIV").next(".book-description").html(book[0].description);
+        $("ul#booksList").find("button[data-id=" + book[0].id + "]")
+            .first().siblings("span.muted").html(book[0].author.name + " " + book[0].author.surname);
     }
 
     function updateSelectEdit(book) {
