@@ -1,5 +1,6 @@
 $(function (e) {
 
+    loadAllAuthors();
     loadAllBooks();
     // Zadanie 1 - dodawanie nowej książki --------------------------
 
@@ -17,11 +18,17 @@ $(function (e) {
     form.on("submit", bookEditSubmit);
 
 
+    var authorEdit = $("select#author_id");
+    var authorEditSelect = $("select#author_id_edit");
+
+
     function bookAddFormSubmit(event) {
         var inputTitle = $("form#bookAdd").find("input#title");
         var title = inputTitle.val();
         var inputDescription = $("form#bookAdd").find("textarea#description");
         var description = inputDescription.val();
+        var inputAuthor = $("form#bookAdd").find("select#author_id");
+        var author = inputAuthor.val();
 
         if (title && description) {
             $.ajax({
@@ -29,12 +36,14 @@ $(function (e) {
                 method: "POST",
                 data: {
                     title: title,
-                    description: description
+                    description: description,
+                    author_id: author
                 },
                 dataType: "json"
             }).done(function (result) {
                 addBooksToDom((result["success"]));
                 addToBookEditSelect((result["success"]));
+                inputAuthor.val("");
                 inputTitle.val("");
                 inputDescription.val("");
             }).fail(function (xhr, status, err) {
@@ -66,23 +75,26 @@ $(function (e) {
     }
 
     function addBooksToDom(books) {
-        var list = $("ul#booksList");
 
-        for (var i = 0; i < books.length; i++) {
-            var inner = "<div class='panel panel-default'>" +
-                "<div class='panel-heading'>" +
-                "<span class='bookTitle'>" + books[i].title + "</span>" +
-                "<button data-id='" + books[i].id + "' class='btn btn-danger pull-right btn-xs btn-book-remove'><i class='fa fa-trash'></i></button>" +
-                "<button data-id='" + books[i].id + "' class='btn btn-primary pull-right btn-xs btn-book-show-description'><i class='fa fa-info-circle'></i></button>" +
-                "</div>" +
-                "<div class='panel-body book-description'></div>" +
-                "</div>";
-            var li = $("<li class='list-group-item'>");
 
-            li.html(inner);
-            list.append(li);
-        }
+            var list = $("ul#booksList");
+            for (var i = 0; i < books.length; i++) {
+                var inner = "<div class='panel panel-default'>" +
+                    "<div class='panel-heading'>" +
+                    "<span class='bookTitle'>" + books[i].title + " - " + books[i].author_id + "</span>" +
+                    "<button data-id='" + books[i].id + "' class='btn btn-danger pull-right btn-xs btn-book-remove'><i class='fa fa-trash'></i></button>" +
+                    "<button data-id='" + books[i].id + "' class='btn btn-primary pull-right btn-xs btn-book-show-description'><i class='fa fa-info-circle'></i></button>" +
+                    "</div>" +
+                    "<div class='panel-body book-description'></div>" +
+                    "</div>";
+                var li = $("<li class='list-group-item'>");
+
+                li.html(inner);
+                list.append(li);
+            }
     }
+
+
 
 
     // Zadanie 3 - wyświetlanie opisu książki w DOM ---------------------------
@@ -195,6 +207,7 @@ $(function (e) {
         var id = form.find("input#id").val();
         var title = form.find("input#title").val();
         var description = form.find("textarea#description").val();
+        var authorId = form.find("select#author_id_edit").val();
 
         if (title && description) {
             $.ajax({
@@ -202,7 +215,8 @@ $(function (e) {
                 method: "PATCH",
                 data: {
                     title: title,
-                    description: description
+                    description: description,
+                    author_id: authorId
                 },
                 dataType: "json"
             }).done(function (result) {
@@ -233,4 +247,37 @@ $(function (e) {
         $("select#bookEditSelect").find("option[value=" + book[0].id + "]")
             .html(book[0].title);
     }
+
+    // Zadanie 6 - wyświetlenie autorów książek ---------------------
+
+    // 6.1 - wczytanie wszystkich autorów w DOM----------------------
+
+
+    function loadAllAuthors(){
+        $.ajax({
+            url : "../rest/rest.php/author",
+            method : "GET",
+            data : {},
+            dataType : "json"
+        }).done(function(result){
+            var authors = result["success"];
+            if(authors.length > 0){
+                addToAuthorEditSelect(authors, authorEdit);
+                addToAuthorEditSelect(authors, authorEditSelect);
+            }
+        }).fail(function(xhr, status, error){
+            console.log(status + " " + error);
+        })
+    }
+
+    // 6.2 - dodanie autorów do selecta--------------------------------
+
+    function addToAuthorEditSelect(author, form){
+        for (var i=0; i<author.length; i++){
+            var option = $("<OPTION value='"+author[i].id+"'>");
+            option.html(author[i].name + " " + author[i].surname);
+            form.append(option);
+        }
+    }
+
 });
