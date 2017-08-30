@@ -2,7 +2,7 @@
 
 class Author implements JsonSerializable
 {
-    private $id, $name, $surname;
+    private $id, $name, $surname, $books;
 
     public static $db;
 
@@ -83,11 +83,22 @@ class Author implements JsonSerializable
         $authors = $stmt->fetchAll(PDO::FETCH_OBJ);
         $authorsList = [];
 
+        //load Book class
+        if (!class_exists('Book')) {
+            include_once __DIR__.'/Book.php';
+        }
+
         foreach ($authors as $dbAuthor) {
             $author = new Author($db);
             $author->id = $dbAuthor->id;
             $author->name = $dbAuthor->name;
             $author->surname = $dbAuthor->surname;
+            $author->books = [];
+
+            $books = Book::loadAllByAuthor($db, $dbAuthor->id);
+            foreach ($books as $book) {
+                $author->books[] = json_decode(json_encode($book), true);
+            }
 
             $authorsList[] = $author;
         }
@@ -101,6 +112,7 @@ class Author implements JsonSerializable
             'id'      => $this->id,
             'name'    => $this->name,
             'surname' => $this->surname,
+            'books'   => $this->books,
         ];
     }
 

@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $book = new Book($conn);
     $book->setTitle($_POST['title']);
     $book->setDescription($_POST['description']);
+    $book->setAuthorId($_POST['author_id']);
 
     $book->save();
 
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $bookToEdit = Book::loadAll($conn, $pathId)[0];
     $bookToEdit->setTitle($patchVars['title']);
     $bookToEdit->setDescription($patchVars['description']);
+    $bookToEdit->setAuthorId($patchVars['author_id']);
 
     $bookToEdit->save();
 

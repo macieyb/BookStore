@@ -9,6 +9,12 @@
                 <input type="text" class="form-control" name="title" id="title" placeholder="Title...">
             </div>
             <div class="form-group">
+                <label for="title">Author</label>
+                <select name="author_id" id="author_id" class="form-control">
+                    <option value=""> -- Select Author --</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" id="description" cols="30" rows="5"
                           placeholder="Description..."></textarea>
@@ -32,6 +38,12 @@
                 <input type="text" class="form-control" name="title" id="title" placeholder="Title...">
             </div>
             <div class="form-group">
+                <label for="title">Author</label>
+                <select name="author_id" id="author_id_edit" class="form-control">
+                    <option value=""> -- Select Author --</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" id="description" cols="30" rows="5"
                           placeholder="Description..."></textarea>
@@ -52,7 +64,7 @@
                     <!--                    <li class="list-group-item">-->
                     <!--                        <div class="panel panel-default">-->
                     <!--                            <div class="panel-heading">-->
-                    <!--                                <span class="bookTitle">Example book 1</span>-->
+                    <!--                                <span class="bookTitle">Example book 1 (author)</span>-->
                     <!--                                <button data-id="1"-->
                     <!--                                        class="btn btn-danger pull-right btn-xs btn-book-remove"><i-->
                     <!--                                        class="fa fa-trash"></i>-->

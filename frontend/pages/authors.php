@@ -51,7 +51,11 @@
                     <!--                            <div class="panel-heading"><span class="authorTitle">Jan Kowalski</span>-->
                     <!--                                <button data-id="1" class="btn btn-danger pull-right btn-xs btn-author-remove"><i-->
                     <!--                                            class="fa fa-trash"></i></button>-->
+                    <!--                                <button data-id="1" class="btn btn-primary pull-right btn-xs btn-author-books"><i-->
+                    <!--                                            class="fa fa-book"></i></button>-->
+                    <!--
                     <!--                            </div>-->
+                    <!--                            <ul class="authorBooksList"></ul>-->
                     <!--                        </div>-->
                     <!--                    </li>-->
                 </ul>
