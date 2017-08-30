@@ -120,6 +120,7 @@ $(function (e) {
     // Zadanie 4 - Usuwanie książki ----------------------------------------
 
     function deleteBook(event) {
+        var form = $("form#bookEdit");
         var id = $(this).data("id");
         var toDelete = $(this).closest("LI");
         var toDeleteOption = $("SELECT#bookEditSelect")
@@ -136,6 +137,8 @@ $(function (e) {
             if (isDeleted) {
                 toDelete.remove();
                 toDeleteOption.remove();
+                $("select#bookEditSelect").val("");
+                form.slideUp();
             }
         }).fail(function (xhr, status, err) {
             console.log(status, err);
@@ -230,7 +233,4 @@ $(function (e) {
         $("select#bookEditSelect").find("option[value=" + book[0].id + "]")
             .html(book[0].title);
     }
-
-// dodać znikanie edycji jak usunę edytowaną książkę.
-
 });
