@@ -132,6 +132,8 @@ $(function (e) {
     // Zadanie 4 - Usuwanie książki ----------------------------------------
 
     function deleteBook(event) {
+        if(confirm("Do you want to delete?")){
+
         var form = $("form#bookEdit");
         var id = $(this).data("id");
         var toDelete = $(this).closest("LI");
@@ -155,7 +157,11 @@ $(function (e) {
         }).fail(function (xhr, status, err) {
             console.log(status, err);
         });
+    } else {
+        preventDefault();
+        }
     }
+
 
     // Zadanie 5 - modyfikacja książki ---------------------------------------------
 
