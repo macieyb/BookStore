@@ -8,6 +8,7 @@ $(function () {
 
     var authorList = $("ul#authorsList");
     authorList.on("click", ".btn-author-remove", deleteAuthor);
+    authorList.on("click", ".btn-author-books", showBooks);
 
     var authorEditSelect = $("select#authorEditSelect");
     authorEditSelect.on("change", authorEditSelectChange);
@@ -18,13 +19,13 @@ $(function () {
 
     // 1. Dodawanie nowego autora --------------------------
 
-    function authorAddFormSubmit(event){
+    function authorAddFormSubmit(event) {
         var inputName = $("form#authorAdd").find("input#name");
         var name = inputName.val();
         var inputSurname = $("form#authorAdd").find("input#surname");
         var surname = inputSurname.val();
 
-        if(name && surname){
+        if (name && surname) {
 
             $.ajax({
                 url: "../rest/rest.php/author",
@@ -50,7 +51,7 @@ $(function () {
 
     // 2. Wyświetlanie elementów w DOM -----------------------------
 
-    function loadAllAuthors (){
+    function loadAllAuthors() {
 
         $.ajax({
             url: "../rest/rest.php/author",
@@ -73,10 +74,12 @@ $(function () {
         var list = $("ul#authorsList");
 
         for (var i = 0; i < authors.length; i++) {
-            var inner = "<div class='panel panel-default'>"+
-                "<div class='panel-heading'><span class='authorTitle'>"+authors[i].name+" "+authors[i].surname+"</span>"+
-                "<button data-id='"+authors[i].id+"' class='btn btn-danger pull-right btn-xs btn-author-remove'><i class='fa fa-trash'></i></button>"+
-                "</div>"+
+            var inner = "<div class='panel panel-default'>" +
+                "<div class='panel-heading'><span class='authorTitle'>" + authors[i].name + " " + authors[i].surname + "</span>" +
+                "<button data-id='" + authors[i].id + "' class='btn btn-danger pull-right btn-xs btn-author-remove'><i class='fa fa-trash'></i></button>" +
+                "<button data-id='" + authors[i].id + "' class='btn btn-primary pull-right btn-xs btn-author-books'><i class='fa fa-book'></i></button>" +
+                "</div>" +
+                "<div class='panel-body muted authorBooksList'></div>" +
                 "</div>";
             var li = $("<li class='list-group-item'>");
 
@@ -90,28 +93,33 @@ $(function () {
 
 
     function deleteAuthor(event) {
-        var id = $(this).data("id");
-        var toDelete = $(this).closest("li");
-        var toDeleteOption = $("select#authorEditSelect")
-            .find("OPTION[value=" + id + "]");
+        if (confirm("Do you want to delete?")) {
 
-        $.ajax({
-            url: "../rest/rest.php/author/" + id,
-            method: "DELETE",
-            data: {},
-            dataType: "json"
-        }).done(function (result) {
-            console.log(result);
-            var isDeleted = result["success"] === "deleted";
-            if (isDeleted) {
-                toDelete.remove();
-                toDeleteOption.remove();
-                $("select#authorEditSelect").val("");
-                form.slideUp();
-            }
-        }).fail(function (xhr, status, err) {
-            console.log(status, err);
-        });
+            var id = $(this).data("id");
+            var toDelete = $(this).closest("li");
+            var toDeleteOption = $("select#authorEditSelect")
+                .find("OPTION[value=" + id + "]");
+
+            $.ajax({
+                url: "../rest/rest.php/author/" + id,
+                method: "DELETE",
+                data: {},
+                dataType: "json"
+            }).done(function (result) {
+                console.log(result);
+                var isDeleted = result["success"] === "deleted";
+                if (isDeleted) {
+                    toDelete.remove();
+                    toDeleteOption.remove();
+                    $("select#authorEditSelect").val("");
+                    form.slideUp();
+                }
+            }).fail(function (xhr, status, err) {
+                console.log(status, err);
+            });
+        } else {
+            preventDefault();
+        }
     }
 
 
@@ -205,6 +213,33 @@ $(function () {
     }
 
 
+    // 5. Wyświetlenie wszystkich książek autora ---------------------------
 
 
+    function showBooks(event) {
+        var id = $(this).data("id");
+        var element = $(this);
+
+        $.ajax({
+            url: "../rest/rest.php/book",
+            method: "GET",
+            data: {},
+            dataType: "json"
+        }).done(function (result) {
+            var books = result["success"];
+            var panel = element.parent().next(".authorBooksList");
+            var inner = "";
+            for (var i = 0; i < books.length; i++) {
+                if (books[i].author_id == id) {
+                    inner += (books[i].title + "<br>");
+                }
+            }
+            panel.html(inner);
+            if (inner !== "") {
+                panel.slideToggle();
+            }
+        }).fail(function (xhr, status, error) {
+            console.log(status + " " + error);
+        })
+    }
 });
